@@ -1,29 +1,75 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../pages/Home.vue'
+import HomePage from '../pages/HomePage.vue'
+import LoginPage from '../pages/LoginPage.vue'
+import SystemSettingPage from '../pages/admin/SystemSettingPage.vue'
+import Navigation from '../components/Navigation'
+import store from '../store'
+import {login} from '../store/auth'
+import requireAuth from '../requireAuth'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: Home
+    name: 'navigation',
+    component: requireAuth(Navigation),
+    children:[
+      {
+        path: 'system-setting',
+        name: 'systemSetting',
+        component: SystemSettingPage,
+        children: [
+          {
+            path: 'shareFile',
+            component: () => import('../components/system-setting/ShareFile.vue')
+          },
+          {
+            path: 'attendance',
+            component: () => import('../components/system-setting/AttendanceSetting.vue')
+          },
+
+        ]
+      }
+    ]
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../pages/About.vue')
-  }
+    path: '/login',
+    exact: true,
+    name: 'loginPage',
+    component: LoginPage
+  },
+  {
+    path: '/parent',
+    name: 'homePage',
+    component: requireAuth(HomePage)
+  },
 ]
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+// 除 登录页，其他界面功能，必须在 用户登录后，才能进入界面
+router.beforeEach((to, from, next) => {
+  if (store.state.auth.isLoginSuccess)
+    next()
+  else {
+    const {path, name} = to
+    console.log(path)
+    if (path === '/login' && name === 'loginPage')
+      next()
+    else {
+      if (localStorage.loginData) {
+        login(JSON.parse(localStorage.loginData))
+        next()
+      } else
+        next('/login')
+    }
+  }
 })
 
 export default router

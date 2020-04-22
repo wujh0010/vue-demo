@@ -1,15 +1,15 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-Vue.use(Vuex)
+import auth from './auth'
+import signIn from './signIn'
+import stageGradeSubject from './stageGradeSubject'
 
+Vue.use(Vuex)
 export default new Vuex.Store({
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
   modules: {
+    auth,
+    signIn,
+    stageGradeSubject
   }
 })
