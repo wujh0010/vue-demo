@@ -25,6 +25,13 @@ const mutations = {
   LOGIN_SUCCESS:function (state, param) {
     state.isLoginSuccess = true
     console.log(param)
+  },
+  LOGIN_OUT:function (state) {
+    localStorage.removeItem('')
+    state.isLogging = false
+    state.isAuthenticated = false
+    state.isLoginSuccess = false
+    state.user = null
   }
 }
 const actions = {

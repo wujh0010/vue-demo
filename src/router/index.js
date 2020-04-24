@@ -2,6 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomePage from '../pages/HomePage.vue'
 import LoginPage from '../pages/LoginPage.vue'
+import Error from '../Error.vue'
+import HomeworkPage from '../pages/HomeworkPage.vue'
 import SystemSettingPage from '../pages/admin/SystemSettingPage.vue'
 import Navigation from '../components/Navigation'
 import store from '../store'
@@ -12,10 +14,22 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/login',
+    exact: true,
+    name: 'loginPage',
+    component: LoginPage
+  },
+  {
+    path: '/parent',
+    exact: true,
+    name: 'homePage',
+    component: requireAuth(HomePage)
+  },
+  {
     path: '/',
     name: 'navigation',
     component: requireAuth(Navigation),
-    children:[
+    children: [
       {
         path: 'system-setting',
         name: 'systemSetting',
@@ -31,21 +45,19 @@ const routes = [
           },
 
         ]
+      },
+      {
+        path: 'homework',
+        name: 'homework',
+        component: HomeworkPage
+      },
+      {
+        path:'*',
+        component:Error
       }
     ]
   },
-  {
-    path: '/login',
-    exact: true,
-    name: 'loginPage',
-    component: LoginPage
-  },
-  {
-    path: '/parent',
-    name: 'homePage',
-    component: requireAuth(HomePage)
-  },
-]
+  ]
 
 const router = new VueRouter({
   mode: 'history',
@@ -65,7 +77,10 @@ router.beforeEach((to, from, next) => {
     else {
       if (localStorage.loginData) {
         login(JSON.parse(localStorage.loginData))
-        next()
+        if (path === '/')
+          next('/parent')
+        else
+          next()
       } else
         next('/login')
     }

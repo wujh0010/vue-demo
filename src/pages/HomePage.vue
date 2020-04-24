@@ -6,13 +6,13 @@
     <main class="main_content">
       <div class="route_item"
            v-for="item in routes"
+           @click="handleEnterPage(item)"
            :style="{color:item.color,border:'1px solid',borderColor:item.color}"
            :key="item.id">
         {{item.name}}
       </div>
     </main>
     <footer class="footer_content">
-
     </footer>
   </div>
 </template>
@@ -63,7 +63,8 @@
     {
       id: 9,
       name: '分组作业',
-      color:'#7E5A4E'
+      color:'#7E5A4E',
+      url:'/homework'
     },
     {
       id: 10,
@@ -79,7 +80,8 @@
       }
     },
     methods: {
-      handleOnClick: function (item) {
+
+      handleEnterPage:function(item) {
         const {url} = item
         this.$router.push(url)
       }

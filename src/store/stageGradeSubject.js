@@ -64,12 +64,7 @@ const state = {
 const mutations = {
 
   RECEIVED_TEXTBOOKS:function (state, param) {
-    console.log(state)
-    console.log(param)
     const {textbooks:textBooks} = param.textbookList
-    console.log(textBooks)
-
-
     let { schoolInfo, schools: schoolList} = param
     let courseList = []
 
@@ -125,7 +120,7 @@ const mutations = {
                   .filter(a => a.subject === o.id && a.grade === grade.id)
                   .map(a => {
                     let {bookInfo,...res} = a
-                    console.log(bookInfo)
+                    Object.assign(bookInfo,{})
 
                     return res
                   })
@@ -211,7 +206,7 @@ const mutations = {
                   .filter(a => a.subject === subject.id && a.grade === g.id)
                   .map(o => {
                     let {bookInfo,...res} = o
-                    console.log(bookInfo)
+                    Object.assign(bookInfo,{})
                     return res
                   })
                   .uniqBy('id')
@@ -342,7 +337,7 @@ const mutations = {
     if (currentSchoolStage)
       currentSchoolStage.state = 1
 
-    return stageGradeSubject
+    state.stageGradeSubject = stageGradeSubject
   }
 }
 const actions = {
